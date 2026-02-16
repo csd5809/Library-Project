@@ -1,0 +1,313 @@
+# ME LIGH BOHTHEIA AI GIA NA CHECKARO OLA TA POSSIBLE OPTIONS
+
+S 10
+
+# SECTION 1: Basic Creation & Duplicates
+
+G 1 "Math"
+G 2 "Science"
+G 3 "Computer Science"
+G 1 "Science Fiction"
+# Should print IGNORED (duplicate)
+
+BK 101 1 "Calculus 1"
+BK 102 1 "Calculus 2"
+BK 103 2 "Science 1"
+BK 104 2 "Science 2"
+BK 105 3 "Data Structures"
+BK 101 1 "Calculus 1"
+# Should print IGNORED 
+BK 999 99 "Nonexistent Genre"
+# Should print IGNORED 
+
+M 1 "Manos"
+M 2 "Babis"
+M 3 "Xaris"
+M 1 "Manos"
+# Should print IGNORED (duplicate)
+
+# ==========================================
+# SECTION 2: Loans & Returns
+# ==========================================
+
+# Manos loans books
+L 1 101
+L 1 102
+L 1 103
+L 1 101
+# Should print IGNORED 
+
+# Babis loans books
+L 2 104
+L 2 105
+
+# Xaris loans
+L 3 101
+# Should print IGNORED to exei idi o manos
+
+# Print ta loans tou Manou
+PM 1
+
+# Print ta loan toy Babi
+PM 2
+
+# SECTION 3: Returns with Scores
+
+# Manos returns with valid scores
+R 1 101 8 ok
+R 1 102 9 ok
+R 1 103 7 ok
+
+# Babis returns with various scores
+R 2 104 10 ok
+R 2 105 5 ok
+
+# Check genre rankings 
+PG 1
+PG 2
+PG 3
+
+# SECTION 4: More Complex Scoring
+
+# Manos re-loans and returns
+L 1 101
+L 1 104
+R 1 101 6 ok
+# Now book 101 has avg = floor((8+6)/2) = 7
+R 1 104 8 ok
+# Book 104 avg = floor((10+8)/2) = 9
+
+# Babis loans and returns with NA
+L 2 102
+R 2 102 NA ok
+
+# Xaris loans and gives invalid score
+L 3 103
+R 3 103 15 ok
+# Should print IGNORED and DELETE the loan
+
+# Xaris needs to re-loan 
+L 3 103
+R 3 103 9 ok
+# Now it works
+
+# Check updated rankings
+PG 1
+PG 2
+
+# SECTION 5: Lost Books
+
+L 1 105
+R 1 105 0 lost
+# Book 105 should be marked as lost
+
+PG 3
+# Book 105 should still appear but with lost_flag=1
+
+# ==========================================
+# SECTION 6: Display Allocation (D command)
+# ==========================================
+
+# Current state:
+# Genre 1 : 101(avg=7,sum=14), 102(avg=9,sum=9)
+# Genre 2 : 103(avg=8,sum=16), 104(avg=9,sum=18)
+# Genre 3 : 105(avg=5,sum=5,LOST)
+
+D
+PD
+
+# Stats check
+PS
+
+
+# SECTION 7: More Books & Complex Allocation
+
+BK 201 1 "Linear Algebra"
+BK 202 1 "Applied Mathematics"
+BK 203 2 "Chemistry for begginers"
+BK 204 3 "Computer Architecture"
+BK 205 3 "OOP - JAVA"
+
+# New member
+M 4 "Danai"
+
+# Danai loans and scores
+L 4 201
+L 4 202
+L 4 203
+L 4 204
+L 4 205
+
+R 4 201 10 ok
+R 4 202 9 ok
+R 4 203 8 ok
+R 4 204 7 ok
+R 4 205 6 ok
+
+# Check all genres
+PG 1
+PG 2
+PG 3
+
+# New display allocation
+D
+PD
+
+# SECTION 8: Edge Cases
+
+# Return without loan
+R 1 999 5 ok
+# Should print IGNORED
+
+# Loan nonexistent book
+L 1 888
+# Should print IGNORED
+
+# Loan nonexistent member
+L 99 101
+# Should print IGNORED
+
+# Print nonexistent genre
+PG 99
+
+# Print nonexistent member
+PM 99
+
+# SECTION 9: Zero SLOTS Test
+
+S 0
+D
+PD
+# prepei na deixei empty display
+
+# Restore SLOTS
+S 15
+D
+PD
+
+# SECTION 10: Tie-Breaking Tests
+
+# Create new genre with books that will have same avg
+G 4 "Physics"
+BK 301 4 "Quantum Physics"
+BK 302 4 "Physics 1"
+BK 303 4 "Astrophysics 1"
+
+M 5 "Eva"
+
+L 5 301
+L 5 302
+L 5 303
+
+R 5 301 5 ok
+R 5 302 5 ok
+R 5 303 5 ok
+
+# All should have avg=5, sorted by bid
+PG 4
+
+# SECTION 11: Invalid Score Edge Cases
+
+L 1 201
+R 1 201 -5 ok
+# Should print IGNORED and NOT delete loan
+
+R 1 201 7 ok
+
+# SECTION 12: Multiple Returns Same Book
+
+L 2 301
+R 2 301 8 ok
+# = 6
+
+L 2 301
+R 2 301 9 ok
+# = 7
+
+L 2 301
+R 2 301 4 ok
+# = 6
+
+PG 4
+
+# FINAL STATS
+
+D
+PD
+PS
+
+# Print all member loans (should be empty)
+PM 1
+PM 2
+PM 3
+PM 4
+PM 5
+
+
+# ==========================================
+# SECTION 13: PHASE 2 TESTS (F, U, TOP, AM, X, BF)
+# ==========================================
+
+# Test F (Find by Title) - Xrhsh BookIndex (AVL)
+F "Data Structures"
+# ANAMENOMENO: DONE, bid=105, gid=3, avg=5, lost=1, "Data Structures"
+F "Quantum Physics"
+# ANAMENOMENO: DONE, bid=301, gid=4, avg=6, lost=0, "Quantum Physics"
+F "Non Existent Book"
+# ANAMENOMENO: NOT FOUND
+
+# Test U (Update Title) - Xrhsh BookIndex (AVL delete/insert)
+U 101 "Advanced Calculus 101"
+# ANAMENOMENO: DONE
+F "Calculus 1"
+# ANAMENOMENO: NOT FOUND (paliotitlos)
+F "Advanced Calculus 101"
+# ANAMENOMENO: DONE, bid=101, gid=1, avg=7, lost=0, "Advanced Calculus 101"
+U 102 "Advanced Calculus 101"
+# ANAMENOMENO: IGNORED (duplicate title)
+U 999 "Fake Book"
+# ANAMENOMENO: IGNORED (non-existent bid)
+
+# Test duplicate title me BK (to checkareis hdh sto main, alla testare to)
+BK 501 1 "OOP - JAVA"
+# ANAMENOMENO: IGNORED (duplicate title se allo genre)
+
+# Test TOP (Recommendation Heap)
+# Ta lost (105) den prepei na emfanizontai
+# Top scores einai: 102(9), 202(9), 104(9), 201(8), 203(8), 103(8), ...
+TOP 5
+# ANAMENOMENO: DONE
+#  102,"Calculus 2",9
+#  202,"Applied Mathematics",9
+#  104,"Science 2",9
+#  201,"Linear Algebra",8
+#  203,"Chemistry for begginers",8
+# (H seira me ta isa avg mporei na diaferei)
+
+# Test AM (Member Activity List)
+AM
+# ANAMENOMENO: DONE
+# MemberActivity:
+#  sid=5, loans=3, reviews=3, avg=5
+#  sid=4, loans=5, reviews=5, avg=8
+#  sid=3, loans=2, reviews=2, avg=12  (NOTE: 15-5=10/1 -> (9+15)/2 = 12 an krataei to invalid score)
+#  sid=2, loans=6, reviews=5, avg=7
+#  sid=1, loans=7, reviews=7, avg=5
+# (H seira einai tyxaia, checkare ta noumera)
+
+# Test X (System Stats)
+X
+# ANAMENOMENO: DONE
+# System Stats:
+#  books=13
+#  members=5
+#  loans=0
+#  all_avg_score=7
+
+# Test BF (Free all and exit)
+BF
+# ANAMENOMENO: DONE
+# ...kai to programma prepei na termatisei edw...
+
+# Auto den prepei na trexei
+G 99 "TEST BF FAILED"

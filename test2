@@ -1,0 +1,28 @@
+S 2
+G 10 "CS"
+BK 101 10 "Algorithms"
+M 1 "Eleni"
+
+# daneismos kai epistrofi me akyro score
+L 1 101
+R 1 101 13 ok
+
+# epistrofi xoris bathmologia NA kleimei o daneismos den allazei to avg
+R 1 101 NA ok
+
+# neos daneismos me epistrofi lost ⇒ lost_flag=1, den prosmetratai pote se D
+L 1 101
+R 1 101 0 lost
+
+# elegxoi
+PG 10
+D
+PD
+
+# Diploegrafes/lathi
+M 1 "Eleni"
+BK 101 10 "Algorithms"
+G 10 "CS"
+L 2 999
+R 2 999 5 ok
+PM 1
