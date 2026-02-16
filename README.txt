@@ -1,8 +1,5 @@
-Project: Systhma Diaxeirisis Vivliothikis - Fasi 2
-Mathima: CS-240 Domes Dedomenwn
-Onoma Foithth: Xristoforakis Xristoforos
-A.M.: CSD 5809
-Imerominia: 30/11/2025
+Project: Systhma Diaxeirisis Vivliothikis 
+Onoma : Xristoforakis Xristoforos
 
 =============================================================================
 1. METAFRASI & EKTELESH (COMPILATION & EXECUTION)
@@ -23,7 +20,7 @@ Gia na treksete to programma me ena arxeio eisodou (p.x. test3.txt):
 ta arxeia 'Library.h' kai 'main.c' prepei na briskontai ston idio fakelo.
 
 =============================================================================
-2. ti ekana sth fash 2 - OVERVIEW
+2.  OVERVIEW
 =============================================================================
 
 Sth Fasi 2, to Systhma Diaxeirisis Vivliothikis epektathike gia na ypostirizei 
